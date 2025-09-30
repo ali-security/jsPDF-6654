@@ -18,20 +18,20 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      # Start Sauce Connect tunnel
+      # Start Sauce Connect tunnel (hardcoded credentials)
       - name: Start Sauce Connect
+        uses: saucelabs/sauce-connect-action@v2
+        with:
+          username: jspdf
+          accessKey: 522494eb-e777-4583-87c5-616a74cbf64d
+          tunnelIdentifier: github-ci-tunnel
+
+      - name: Run tests
+        run: npm run test-saucelabs
         env:
           SAUCE_USERNAME: jspdf
           SAUCE_ACCESS_KEY: 522494eb-e777-4583-87c5-616a74cbf64d
-        uses: saucelabs/sauce-connect-action@v2
-        with:
-          username: ${{ secrets.SAUCE_USERNAME }}
-          accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
-          # optional: name the tunnel if you run parallel jobs
-          tunnelIdentifier: github-ci-tunnel
-      - name: Run tests
-        run: npm run test-saucelabs
-        
+          
 
   test-node:
     runs-on: ubuntu-latest
