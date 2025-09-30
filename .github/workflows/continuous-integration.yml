@@ -23,7 +23,7 @@ jobs:
         env:
           SAUCE_USERNAME: jspdf
           SAUCE_ACCESS_KEY: 522494eb-e777-4583-87c5-616a74cbf64d
-        uses: saucelabs/sauce-connect-action@v4
+        uses: saucelabs/sauce-connect-action@v2
         with:
           username: ${{ secrets.SAUCE_USERNAME }}
           accessKey: ${{ secrets.SAUCE_ACCESS_KEY }}
