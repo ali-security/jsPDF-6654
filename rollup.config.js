@@ -10,7 +10,7 @@ import pkg from "./package.json";
 function replaceVersion() {
   return replace({
     delimiters: ["", ""],
-    "0.0.0": pkg.version
+    "0.0.0": "2.5.1"
   });
 }
 

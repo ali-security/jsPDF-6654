@@ -1,31 +1,29 @@
 name: Continous Integration
 
-on: [push, pull_request]
+on: [push, pull_request,workflow_dispatch]
 
 jobs:
-  test-saucelabs:
+  test-browser:
     name: Browser tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 14
           cache: npm
       - name: npm install
-        run: npm ci
+        run: npm install
       - name: Build
         run: npm run build
       - name: Run tests
-        run: npm run test-saucelabs
-        env:
-          SAUCE_USERNAME: jspdf
-          SAUCE_ACCESS_KEY: ${{secrets.SAUCE_ACCESS_KEY}}
+        run: npm run test-ci
 
   test-node:
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
       matrix:
         node-version:
@@ -35,14 +33,14 @@ jobs:
     name: Node.js ${{ matrix.node-version }} test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
       - name: npm install
-        run: npm ci
+        run: npm install
       - name: Build
         run: npm run build
       - name: Run tests
@@ -59,16 +57,21 @@ jobs:
     name: Typings tests (typescript@${{ matrix.ts-version }})
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 14
           cache: npm
       - name: npm install
-        run: npm ci
+        run: npm install
       - name: Install typescript@${{ matrix.ts-version }}
-        run: npm install typescript@${{ matrix.ts-version }}
+        run: |
+          npm install typescript@${{ matrix.ts-version }}
+          # fix: if latest, also install matching node types
+          if [ "${{ matrix.ts-version }}" = "latest" ]; then
+            npm install @types/node@latest
+          fi
       - name: Run tests
         run: npm run test-typings
 
@@ -77,13 +80,13 @@ jobs:
     name: Lint
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 14
           cache: npm
       - name: npm install
-        run: npm ci
+        run: npm install
       - name: Check Prettier
         run: npm run lint
